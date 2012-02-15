@@ -31,7 +31,6 @@ import hmac
 import binascii
 import httplib2
 
-# unicode and utf8 things refactored out in charset.py
 from .charset import to_unicode, to_utf8, \
                      to_unicode_if_string, to_utf8_if_string, \
                      to_unicode_optional_iterator, to_utf8_optional_iterator
