@@ -69,23 +69,3 @@ from .client import Client
 from .server import Server
 from .signature import SignatureMethod, \
                        SignatureMethod_HMAC_SHA1, SignatureMethod_PLAINTEXT
-# exc
-
-# helper
-# xoauth
-# helper
-
-# consumer
-
-
-# token
-
-# helper
-
-# request
-
-# client
-
-# server
-
-# signature
