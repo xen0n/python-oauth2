@@ -31,6 +31,12 @@ import hmac
 import binascii
 import httplib2
 
+# unicode and utf8 things refactored out in charset.py
+from .charset import to_unicode, to_utf8, \
+                     to_unicode_if_string, to_utf8_if_string, \
+                     to_unicode_optional_iterator, to_utf8_optional_iterator
+
+
 try:
     from urlparse import parse_qs
     parse_qs # placate pyflakes
@@ -93,65 +99,6 @@ def build_xoauth_string(url, consumer, token=None):
 
     return "%s %s %s" % ("GET", url, ','.join(params))
 
-
-def to_unicode(s):
-    """ Convert to unicode, raise exception with instructive error
-    message if s is not unicode, ascii, or utf-8. """
-    if not isinstance(s, unicode):
-        if not isinstance(s, str):
-            raise TypeError('You are required to pass either unicode or string here, not: %r (%s)' % (type(s), s))
-        try:
-            s = s.decode('utf-8')
-        except UnicodeDecodeError, le:
-            raise TypeError('You are required to pass either a unicode object or a utf-8 string here. You passed a Python string object which contained non-utf-8: %r. The UnicodeDecodeError that resulted from attempting to interpret it as utf-8 was: %s' % (s, le,))
-    return s
-
-def to_utf8(s):
-    return to_unicode(s).encode('utf-8')
-
-def to_unicode_if_string(s):
-    if isinstance(s, basestring):
-        return to_unicode(s)
-    else:
-        return s
-
-def to_utf8_if_string(s):
-    if isinstance(s, basestring):
-        return to_utf8(s)
-    else:
-        return s
-
-def to_unicode_optional_iterator(x):
-    """
-    Raise TypeError if x is a str containing non-utf8 bytes or if x is
-    an iterable which contains such a str.
-    """
-    if isinstance(x, basestring):
-        return to_unicode(x)
-
-    try:
-        l = list(x)
-    except TypeError, e:
-        assert 'is not iterable' in str(e)
-        return x
-    else:
-        return [ to_unicode(e) for e in l ]
-
-def to_utf8_optional_iterator(x):
-    """
-    Raise TypeError if x is a str or if x is an iterable which
-    contains a str.
-    """
-    if isinstance(x, basestring):
-        return to_utf8(x)
-
-    try:
-        l = list(x)
-    except TypeError, e:
-        assert 'is not iterable' in str(e)
-        return x
-    else:
-        return [ to_utf8_if_string(e) for e in l ]
 
 def escape(s):
     """Escape a URL including any /."""
